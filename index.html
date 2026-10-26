@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHARGE & CHILL MART - All Lagos</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Inter, sans-serif;
+      }
+      body {
+        background: #f8f5ef;
+      }
+      header {
+        background: #0a0a0a;
+        color: #ffd60a;
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 99;
+      }
+      .hero-slider {
+        position: relative;
+        height: 420px;
+        overflow: hidden;
+        background: #000;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: 1s;
+        display: flex;
+        align-items: center;
+        padding: 20px;
+      }
+      .slide.active {
+        opacity: 1;
+      }
+      .slide img {
+        width: 55%;
+        height: 90%;
+        object-fit: cover;
+        border-radius: 16px;
+      }
+      .slide-text {
+        color: #fff;
+        padding: 18px;
+        flex: 1;
+      }
+      .slide-text h2 {
+        font-size: 32px;
+        line-height: 0.9;
+        color: #ffd60a;
+      }
+      .badge {
+        background: #ffd60a;
+        color: #111;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 11px;
+        display: inline-block;
+        margin: 8px 0;
+      }
+      .btn {
+        background: #ffd60a;
+        color: #111;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .dots {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        background: #ffffff66;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .dot.active {
+        background: #ffd60a;
+      }
+      .jm-cart-btn {
+        background: #ffd60a;
+        color: #002080;
+        padding: 6px 14px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .jm-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 10px;
+      }
+      .jm-card {
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px #0001;
+      }
+      .jm-card img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+      }
+      .jm-info {
+        padding: 8px;
+      }
+      .jm-info p {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .jm-info b {
+        color: #002080;
+      }
+      .jm-card button {
+        width: 92%;
+        margin: 0 4% 10px;
+        background: #ffd60a;
+        border: none;
+        padding: 9px;
+        border-radius: 6px;
+        font-weight: 900;
+        cursor: pointer;
+        color: #002080;
+      }
+      .jm-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99998;
+      }
+      .jm-overlay.show {
+        display: block;
+      }
+      .jm-drawer {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 90%;
+        max-width: 380px;
+        height: 100vh;
+        background: #fff;
+        z-index: 99999;
+        transition: 0.35s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .jm-drawer.open {
+        right: 0;
+      }
+      .jm-drawer-top {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px;
+        border-bottom: 1px solid #eee;
+        flex-shrink: 0;
+      }
+      #jm-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        min-height: 100px;
+      }
+      .jm-row {
+        display: flex;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+        align-items: center;
+      }
+      .jm-row img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      .jm-row-info {
+        flex: 1;
+      }
+      .jm-row-info p {
+        font-size: 13px;
+        margin: 0;
+        font-weight: 600;
+      }
+      .jm-qty {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 4px;
+      }
+      .jm-qty button {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .jm-sum-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 4px 0;
+      }
+      .jm-sum-row.total {
+        font-size: 18px;
+        border-top: 1px dashed #ccc;
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      .sug-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .sug-item:hover {
+        background: #fff9db;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div style="text-align: center">
+        ⚡ <b>CHARGE & CHILL MART</b><br /><small style="font-size: 10px"
+          >IVC Camp service 24/7</small
+        >
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center">
+        <div>6593488912</div>
+        <div class="jm-cart-btn" style="display: flex; align-items: center; flex-direction: column;  font-size: 12px" onclick="jmOpen()">
+          <span id="jm-count">0</span><p style="margin-top: -5px;">🛒</p> 
+        </div>
+      </div>
+    </header>
+    <div class="hero-slider" id="slider">
+      <div
+        class="slide active"
+        style="background: linear-gradient(90deg, #111 40%, #ffd60a)"
+      >
+        <img src="./images/avaterc.jpeg" alt="avaterc" style="height: 400px" />
+        <div class="slide-text">
+          <span class="badge">Power Boost 🤍</span>
+          <h2>Power Up<br />With Fastest<br />Charger!</h2>
+          <p style="font-size: 12px; margin: 8px 0">
+            Same guy in Real Madrid white jersey serving brothers at IVC Camp!
+          </p>
+          <button class="btn">
+            <a style="text-decoration: none; color: black" href="#shopnow"
+              >⚡ Charge Now</a
+            >
+          </button>
+        </div>
+      </div>
+      <div
+        class="slide"
+        style="background: linear-gradient(90deg, #222 40%, #ffd60a)"
+      >
+        <img src="./images/avater.jpg" alt="avater" />
+        <div class="slide-text">
+          <span class="badge">IVC CAMP • 24/7</span>
+          <div style="display: flex; flex-direction: column; gap: 2rem">
+            <h2>Only Brothers<br />Chill Spot</h2>
+            <p style="font-size: 12px; margin: 8px 0">
+              Phone charging, cold drinks, chin-chin, plantain chips, crunchy
+              Kuli Kuli
+            </p>
+          </div>
+          <button class="btn">
+            <a style="text-decoration: none; color: black" href="#chargenow"
+              >🛒 Shop Now</a
+            >
+          </button>
+        </div>
+      </div>
+      <div
+        class="slide"
+        style="background: linear-gradient(90deg, #ffd60a 40%, #111)"
+      >
+        <img src="./images/ceo.jpeg" alt="ceo" style="height: 400px" />
+        <div class="slide-text" style="color: #111">
+          <span class="badge" style="background: #111; color: #ffd60a"
+            >Fastest Delivery</span
+          >
+          <h2 style="color: #111">Fastest<br />Delivery To your door step</h2>
+          <p style="font-size: 12px; margin: 8px 0; color: #111">
+            Charge & Chill Mart CEO — we deliver anywhere in camp!
+          </p>
+          <button class="btn" style="background: #111; color: #ffd60a">
+            <a style="text-decoration: none; color: white" href="#shopnow"
+              >📦 Order Delivery</a
+            >
+          </button>
+        </div>
+      </div>
+      <div class="dots">
+        <div class="dot active" onclick="go(0)"></div>
+        <div class="dot" onclick="go(1)"></div>
+        <div class="dot" onclick="go(2)"></div>
+      </div>
+    </div>
+
+    <!-- FIRST ADD TO CART SECTION -->
+    <div
+      id="chargenow"
+      style="
+        margin: 12px;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: 0 4px 20px #0001;
+      "
+    >
+      <h3
+        style="
+          text-align: center;
+          margin: 10px 0;
+          padding: 10px;
+          background-color: #0000002d;
+          border-radius: 3rem;
+        "
+      >
+        Checkout Gadgets available for charging at camp site
+      </h3>
+      <div class="jm-grid">
+        <div class="jm-card">
+          <img src="./images/lamp.jpeg" />
+          <div class="jm-info">
+            <p>Lamp</p>
+            <b>N200</b>
+          </div>
+          <button onclick="jmAdd(1, 'Lamp', 200, './images/lamp.jpeg')">
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/touch.jpeg" />
+          <div class="jm-info">
+            <p>Touch Light</p>
+            <b>N200</b>
+          </div>
+          <button onclick="jmAdd(2, 'Touch Light', 200, './images/touch.jpeg')">
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/speaker.jpeg" />
+          <div class="jm-info">
+            <p>Bluetooth Speaker</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(3, 'Bluetooth Speaker', 200, './images/speaker.jpeg')
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/phone.jpeg" />
+          <div class="jm-info">
+            <p>Phone Full Charge</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="jmAdd(4, 'Phone Full Charge', 200, './images/phone.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/laptop.jpeg" />
+          <div class="jm-info">
+            <p>Laptop</p>
+            <b>N400</b>
+          </div>
+          <button onclick="jmAdd(5, 'Laptop', 400, './images/laptop.jpeg')">
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/powerk.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 5k mAh</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="jmAdd(6, 'Power Bank 5k', 200, './images/powerk.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power1.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 10k mAh</p>
+            <b>N400</b>
+          </div>
+          <button
+            onclick="jmAdd(7, 'Power Bank 10k', 400, './images/power1.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power2.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 20k mAh</p>
+            <b>N800</b>
+          </div>
+          <button
+            onclick="jmAdd(8, 'Power Bank 20k', 800, './images/power2.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power3.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 30k mAh</p>
+            <b>N1,200</b>
+          </div>
+          <button
+            onclick="jmAdd(9, 'Power Bank 30k', 1200, './images/power3.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power4.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 40k mAh</p>
+            <b>N1,600</b>
+          </div>
+          <button
+            onclick="jmAdd(10, 'Power Bank 40k', 1600, './images/power4.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power5.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 50k mAh</p>
+            <b>N2,000</b>
+          </div>
+          <button
+            onclick="jmAdd(11, 'Power Bank 50k', 2000, './images/power5.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power6.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 60k mAh</p>
+            <b>N2,400</b>
+          </div>
+          <button
+            onclick="jmAdd(12, 'Power Bank 60k', 2400, './images/power6.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/power5.jpeg" />
+          <div class="jm-info">
+            <p>Power Bank 70k mAh</p>
+            <b>N2,800</b>
+          </div>
+          <button
+            onclick="jmAdd(13, 'Power Bank 70k', 2800, './images/power5.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECOND ADD TO CART SECTION -->
+    <div
+      id="shopnow"
+      style="
+        margin: 12px;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: 0 4px 20px #0001;
+      "
+    >
+      <h3
+        style="
+          text-align: center;
+          margin: 10px 0;
+          padding: 10px;
+          background-color: #0000002d;
+          border-radius: 3rem;
+        "
+      >
+        Checkout snacks and Drinks available at camp site
+      </h3>
+      <div class="jm-grid">
+        <!-- chin-chin -->
+        <div class="jm-card">
+          <img src="./images/chinchins.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin small</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                14,
+                'Crunchy Chin-Chin Small',
+                200,
+                './images/chinchins.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchins.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Small Jar</p>
+            <b>N500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                15,
+                'Crunchy Chin-Chin Small Jar',
+                500,
+                './images/chinchins.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchins.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Medium</p>
+            <b>N1,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                16,
+                'Crunchy Chin-Chin Medium',
+                1000,
+                './images/chinchins.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchins.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Medium Jar</p>
+            <b>N1,500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                17,
+                'Crunchy Chin-Chin Medium Jar',
+                1500,
+                './images/chinchins.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchins.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Bigie</p>
+            <b>N2,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                18,
+                'Crunchy Chin-Chin Bigie',
+                2000,
+                './images/chinchins.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchinp.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Big Jar</p>
+            <b>N3,500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                19,
+                'Crunchy Chin-Chin Big Jar',
+                3500,
+                './images/chinchinp.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/chinchinp.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Chin-Chin Big Jar</p>
+            <b>N5,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                20,
+                'Crunchy Chin-Chin Big Jar',
+                5000,
+                './images/chinchinp.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <!-- plantain 2 -->
+        <div class="jm-card">
+          <img src="./images/plantains.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips small</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                21,
+                'Crunchy Chin-Chin Small',
+                200,
+                './images/plantains.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantains.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Small Jar</p>
+            <b>N500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                22,
+                'Crunchy Chin-Chin Small Jar',
+                500,
+                './images/plantains.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantains.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Medium</p>
+            <b>N1,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                23,
+                'Crunchy Chin-Chin Medium',
+                1000,
+                './images/plantains.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantains.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Medium Jar</p>
+            <b>N1,500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                24,
+                'Crunchy Chin-Chin Medium Jar',
+                1500,
+                './images/plantains.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantains.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Bigie</p>
+            <b>N2,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                25,
+                'Crunchy Chin-Chin Bigie',
+                2000,
+                './images/plantains.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantainp.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Big Jar</p>
+            <b>N3,500</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                26,
+                'Crunchy Chin-Chin Big Jar',
+                3500,
+                './images/plantainp.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/plantainp.jpeg" />
+          <div class="jm-info">
+            <p>Crunchy Plantain-Chips Big Jar</p>
+            <b>N5,000</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(
+                27,
+                'Crunchy Chin-Chin Big Jar',
+                5000,
+                './images/plantainp.jpeg',
+              )
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <!-- drinks -->
+        <div class="jm-card">
+          <img src="./images/malt.jpeg" />
+          <div class="jm-info">
+            <p>Malt</p>
+            <b>N600</b>
+          </div>
+          <button onclick="jmAdd(28, 'Malt', 600, './images/malt.jpeg')">
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/sachetwater.jpeg" />
+          <div class="jm-info">
+            <p>3 Sachet Water</p>
+            <b>N100</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(29, '3 Sachet Water', 100, './images/sachetwater.jpeg')
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/bottlewater.jpeg" />
+          <div class="jm-info">
+            <p>Table Water</p>
+            <b>N200</b>
+          </div>
+          <button
+            onclick="jmAdd(30, 'Table Water', 200, './images/bottlewater.jpeg')"
+          >
+            ADD TO CART
+          </button>
+        </div>
+        <div class="jm-card">
+          <img src="./images/americancola.jpeg" />
+          <div class="jm-info">
+            <p>American Cola</p>
+            <b>N400</b>
+          </div>
+          <button
+            onclick="
+              jmAdd(31, 'American Cola', 400, './images/americancola.jpeg')
+            "
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="jm-overlay" id="jm-overlay" onclick="jmClose()"></div>
+    <div class="jm-drawer" id="jm-drawer">
+      <div class="jm-drawer-top">
+        <b>Cart (<span id="jm-count2">0</span>)</b
+        ><span onclick="jmClose()" style="cursor: pointer; font-size: 22px"
+          >✕</span
+        >
+      </div>
+      <div id="jm-list"></div>
+      <div
+        style="
+          padding: 12px;
+          background: #fff;
+          border-top: 1px solid #eee;
+          overflow-y: auto;
+        "
+      >
+        <div
+          style="
+            background: #fff9db;
+            border: 1.5px solid #ffd60a;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+          "
+        >
+          <b style="font-size: 13px; display: block; margin-bottom: 6px"
+            >📍 Delivery From BARIGA - All Lagos Areas</b
+          >
+          <select
+            id="areaSelect"
+            onchange="onAreaChange(this)"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1.5px solid #ccc;
+              border-radius: 8px;
+              font-size: 13px;
+              font-weight: 600;
+            "
+          >
+            <option value="">-- Choose your area --</option>
+            <optgroup label="ROUTE 1">
+              <option value="Bariga|1000">Bariga</option>
+              <option value="Akoka|1500">Akoka</option>
+              <option value="Unilag|1500">Unilag</option>
+              <option value="DLI|2000">Unilag-DLI</option>
+              <option value="high-rise|2000">Unilag High-Rise</option>
+              <option value="FCET|1500">FCET College-Gate</option>
+              <option value="Somolu|1500">Somolu / Shomolu</option>
+              <option value="Yaba|2000">Yaba / Sabo / Makoko</option>
+              <option value="Gbagada|1500">Gbagada</option>
+              <option value="Fadeyi|2000">Fadeyi / Jibowu</option>
+            </optgroup>
+            <optgroup label="ROUTE 2">
+              <option value="Ikeja|2500">
+                Ikeja - Allen, Computer Village, Opebi
+              </option>
+              <option value="Ogba|2500">Ogba, Ojodu, Berger, Omole</option>
+              <option value="Ketu|2500">Ketu, Mile 12, Owode, Alapere</option>
+              <option value="Ojota|2500">Ojota, Ogudu, Anthony</option>
+              <option value="Maryland|2000">
+                Maryland, Onipanu, Palmgrove
+              </option>
+              <option value="Oshodi|3000">Oshodi, Mafoluku, Shogunle</option>
+              <option value="Surulere|3000">
+                Surulere - Aguda, Bode Thomas
+              </option>
+              <option value="Mushin|3000">Mushin, Idi-Oro, Itire</option>
+              <option value="Oyingbo|2500">Ebute Metta / Oyingbo</option>
+              <option value="Agege|4000">
+                Agege, Pen Cinema, Dopemu, Orile Agege
+              </option>
+              <option value="Ifako-Ijaiye|4000">
+                Ifako, Ijaiye, Ogba, Fagba, Iju
+              </option>
+            </optgroup>
+            <optgroup label="ROUTE 3">
+              <option value="Alimosho|5000">
+                Alimosho - Ikotun, Idimu, Egbeda
+              </option>
+              <option value="Ipaja|5000">
+                Ipaja, Ayobo, Abule Egba, Alagbado
+              </option>
+              <option value="Isolo|4000">
+                Isolo, Okota, Ejigbo, Ago Palace
+              </option>
+              <option value="Festac|6000">Festac, Amuwo-Odofin, Mile 2</option>
+              <option value="Ojo|7000">Ojo, Okokomaiko, Ijanikin</option>
+              <option value="Apapa|7000">Apapa, Ajegunle, Tincan</option>
+              <option value="Ikorodu Close|6000">
+                Ikorodu Garage, Benson, Owode
+              </option>
+            </optgroup>
+            <optgroup label="ROUTE 4">
+              <option value="Lagos Island|10500">
+                Lagos Island, CMS, Idumota
+              </option>
+              <option value="Ikoyi|12500">Ikoyi, Falomo</option>
+              <option value="Victoria Island|20500">
+                Victoria Island - VI
+              </option>
+              <option value="Lekki Phase 1|20500">
+                Lekki Phase 1, Admiralty
+              </option>
+            </optgroup>
+            <optgroup label="ROUTE 5">
+              <option value="Lekki Phase 2|21000">
+                Lekki Phase 2, Ikate, Elegushi
+              </option>
+              <option value="Ajah|21000">Ajah, Ado Road, Badore</option>
+              <option value="Sangotedo|21000">
+                Sangotedo, Abijo, Fara Park
+              </option>
+              <option value="Awoyaya|21000">Awoyaya, Lakowe, Abijo GRA</option>
+            </optgroup>
+            <optgroup label="ROUTE 6">
+              <option value="Ibeju-Lekki|21000">
+                Ibeju-Lekki, Bogije, Akodo
+              </option>
+              <option value="Ikorodu Far|21000">
+                Ikorodu - Igbogbo, Ijede, Imota
+              </option>
+              <option value="Epe|21000">Epe, Noforija, Poka</option>
+              <option value="Badagry|21000">Badagry, Agbara, Seme</option>
+              <option value="Ibeshe|21000">Ibeshe, Ipakodo, Baiyeku</option>
+            </optgroup>
+          </select>
+          <div style="margin-top: 12px">
+            <b style="font-size: 12px; color: #333">🔍 OR Type Exact Street:</b>
+            <input
+              id="custAddr"
+              placeholder="e.g. 12 Allen Avenue, Ikeja..."
+              style="
+                width: 100%;
+                padding: 11px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                margin-top: 5px;
+                font-size: 13px;
+              "
+            />
+            <div
+              id="addrSug"
+              style="
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-top: 4px;
+                max-height: 150px;
+                overflow: auto;
+                display: none;
+              "
+            ></div>
+          </div>
+          <div
+            id="deliveryBox"
+            style="
+              display: none;
+              margin-top: 10px;
+              background: #e8f5e9;
+              border: 1px solid #4caf50;
+              border-radius: 8px;
+              padding: 10px;
+              font-size: 13px;
+              line-height: 1.5;
+            "
+          >
+            <div>
+              📍 From: <b>Bariga</b> → To: <b><span id="toAddr">-</span></b>
+            </div>
+            <div>
+              📏 Distance: <b><span id="distKm">0</span> km</b>
+              <span id="distCalc" style="font-size: 10px; color: #666"></span>
+            </div>
+            <div>
+              🚚 Delivery:
+              <b style="color: #002080; font-size: 15px"
+                >N<span id="delFee">1000</span></b
+              >
+            </div>
+            <div
+              id="exactAddrDisplay"
+              style="font-size: 11px; color: #2e7d32; margin-top: 4px"
+            ></div>
+          </div>
+        </div>
+
+        <!-- part 3 -->
+
+        <div class="jm-sum-row">
+          <span>Subtotal</span><b>N<span id="jm-sub">0</span></b>
+        </div>
+        <div class="jm-sum-row">
+          <span>Delivery Fee</span
+          ><b style="color: #002080">N<span id="jm-del">1000</span></b>
+        </div>
+        <div class="jm-sum-row total">
+          <span>TOTAL</span><b>N<span id="jm-total">0</span></b>
+        </div>
+        <div
+          style="
+            background: #f0f4ff;
+            border: 1px dashed #002080;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+          "
+        >
+          <b style="color: #002080">💳 PAY TO OPay BUSINESS:</b><br />Business
+          No: <b style="font-size: 17px">6593488912</b><br />Backup:
+          <b>9016791320</b><br />Name: <b>TOHEEB ADEBAYO ADEBISI</b><br />
+          <button
+            onclick="
+              navigator.clipboard.writeText('6593488912');
+              alert('Copied: 6593488912');
+            "
+            style="
+              background: #002080;
+              color: #fff;
+              border: none;
+              padding: 8px 14px;
+              border-radius: 20px;
+              cursor: pointer;
+              font-weight: 800;
+              width: 100%;
+              margin-top: 8px;
+            "
+          >
+            Copy 6593488912
+          </button>
+        </div>
+        <a
+          id="jm-whatsapp"
+          href="#"
+          target="_blank"
+          style="
+            display: block;
+            background: #0a0a0a;
+            color: #ffd60a;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 900;
+            margin-top: 12px;
+          "
+          >I HAVE PAID VIA TRANSFER → SEND PROOF</a
+        >
+        <button
+          onclick="jmPayWithCard()"
+          style="
+            display: block;
+            width: 100%;
+            background: #ffd60a;
+            color: #002080;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 900;
+            margin-top: 8px;
+            border: none;
+            cursor: pointer;
+          "
+        >
+          💳 PAY WITH CARD / BANK / OPay →
+        </button>
+        <small
+          style="
+            display: block;
+            text-align: center;
+            margin-top: 6px;
+            color: #666;
+          "
+          >Money settles to 6593488912</small
+        >
+        <input type="hidden" id="custFullAddr" /><input
+          type="hidden"
+          id="custDist"
+        /><input type="hidden" id="custDelFee" value="1000" />
+      </div>
+    </div>
+    <footer
+      style="
+        background: #0a0a0a;
+        color: #ffd60a;
+        text-align: center;
+        padding: 12px 0 20px;
+        font-size: 10px;
+      "
+    >
+      CHARGE & CHILL MART • Bariga Base • 6593488912 • All Lagos 20 LGAs + 100
+      Areas
+    </footer>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script>
+      let cur = 0;
+      const slides = document.querySelectorAll(".slide");
+      const dots = document.querySelectorAll(".dot");
+      function go(i) {
+        slides[cur].classList.remove("active");
+        dots[cur].classList.remove("active");
+        cur = i;
+        slides[cur].classList.add("active");
+        dots[cur].classList.add("active");
+      }
+      setInterval(function () {
+        go((cur + 1) % slides.length);
+      }, 10000);
+      function orderWA(m) {
+        window.open(
+          "https://wa.me/2349016791320?text=" +
+            encodeURIComponent("Hi Charge & Chill Mart! " + m),
+          "_blank",
+        );
+      }
+      let jmCart = JSON.parse(localStorage.getItem("jmCart") || "[]");
+      function jmAdd(id, name, price, img) {
+        let f = jmCart.find((x) => x.id === id);
+        if (f) {
+          f.qty++;
+        } else {
+          jmCart.push({ id, name, price, img, qty: 1 });
+        }
+        jmSave();
+        jmOpen();
+      }
+      function jmInc(id) {
+        let f = jmCart.find((x) => x.id === id);
+        f.qty++;
+        jmSave();
+      }
+      function jmDec(id) {
+        let f = jmCart.find((x) => x.id === id);
+        if (f.qty > 1) {
+          f.qty--;
+        } else {
+          jmCart = jmCart.filter((x) => x.id !== id);
+        }
+        jmSave();
+      }
+      function jmDel(id) {
+        jmCart = jmCart.filter((x) => x.id !== id);
+        jmSave();
+      }
+      function jmSave() {
+        localStorage.setItem("jmCart", JSON.stringify(jmCart));
+        jmRender();
+      }
+      const shopLat = 6.5343,
+        shopLng = 3.3833;
+      function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+        const dLon = ((lon2 - lon1) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+      function onAreaChange(sel) {
+        if (!sel.value) {
+          return;
+        }
+        var parts = sel.value.split("|");
+        var area = parts[0];
+        var fee = parseInt(parts[1]);
+        var kmMap = {
+          1000: 2,
+          1500: 5,
+          2000: 10,
+          2500: 14,
+          3000: 18,
+          3500: 22,
+          4000: 28,
+          4500: 35,
+          5000: 45,
+        };
+        var km = kmMap[fee] || 5;
+        document.getElementById("toAddr").innerText = area;
+        document.getElementById("distKm").innerText = km;
+        document.getElementById("delFee").innerText = fee;
+        document.getElementById("distCalc").innerText = "(est. " + area + ")";
+        document.getElementById("exactAddrDisplay").innerText =
+          "Area: " + area + ", Lagos";
+        document.getElementById("custFullAddr").value =
+          area + ", Lagos, Nigeria";
+        document.getElementById("custDist").value = km;
+        document.getElementById("custDelFee").value = fee;
+        document.getElementById("deliveryBox").style.display = "block";
+        jmRender();
+      }
+      let searchTimer;
+      document.addEventListener("DOMContentLoaded", function () {
+        var input = document.getElementById("custAddr");
+        var sug = document.getElementById("addrSug");
+        input.addEventListener("input", function () {
+          clearTimeout(searchTimer);
+          var q = input.value.trim();
+          if (q.length < 3) {
+            sug.style.display = "none";
+            return;
+          }
+
+          searchTimer = setTimeout(function () {
+            // Automatically append Lagos and Nigeria to ensure results stay local without breaking the search
+            var searchQuery = q.toLowerCase().includes("lagos")
+              ? q
+              : q + ", Lagos, Nigeria";
+            var url =
+              "https://nominatim.openstreetmap.org/search?format=json&q=" +
+              encodeURIComponent(searchQuery) +
+              "&countrycodes=ng&limit=8";
+
+            fetch(url, {
+              headers: { "User-Agent": "ChargeAndChillMart/1.0" },
+            })
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (data) {
+                // Ensure only results containing "lagos" are displayed
+                var lagosData = data.filter(function (d) {
+                  return (
+                    d.display_name &&
+                    d.display_name.toLowerCase().includes("lagos")
+                  );
+                });
+
+                if (!lagosData.length) {
+                  sug.innerHTML =
+                    "<div class=sug-item>No matching street found in Lagos</div>";
+                  sug.style.display = "block";
+                  return;
+                }
+
+                var html = "";
+                for (var i = 0; i < lagosData.length; i++) {
+                  var d = lagosData[i];
+                  var safe = d.display_name.replace(/'/g, " ");
+                  html +=
+                    "<div class=sug-item onclick=\"selectPlaceOSM('" +
+                    safe +
+                    "'," +
+                    d.lat +
+                    "," +
+                    d.lon +
+                    ')"><b>' +
+                    d.display_name.split(",")[0] +
+                    "</b><br><small>" +
+                    d.display_name +
+                    "</small></div>";
+                }
+                sug.innerHTML = html;
+                sug.style.display = "block";
+              });
+          }, 600);
+        });
+      });
+
+      function selectPlaceOSM(display_name, lat, lon) {
+        var dist = haversine(
+          shopLat,
+          shopLng,
+          parseFloat(lat),
+          parseFloat(lon),
+        );
+
+        // Map exact distance (in km) to your official location pricing tiers
+        var feeCalc = 21000; // Default max for very far areas
+        if (dist <= 2)
+          feeCalc = 1000; // Bariga
+        else if (dist <= 6)
+          feeCalc = 1500; // Akoka, Somolu, Gbagada
+        else if (dist <= 10)
+          feeCalc = 2000; // Yaba, Fadeyi, Maryland
+        else if (dist <= 15)
+          feeCalc = 2500; // Ikeja, Ogba, Ketu, Ojota, Oyingbo
+        else if (dist <= 20)
+          feeCalc = 3000; // Oshodi, Surulere, Mushin
+        else if (dist <= 28)
+          feeCalc = 4000; // Agege, Ifako, Isolo
+        else if (dist <= 35)
+          feeCalc = 5000; // Alimosho, Ipaja
+        else if (dist <= 42)
+          feeCalc = 6000; // Festac, Ikorodu Close
+        else if (dist <= 50)
+          feeCalc = 7000; // Ojo, Apapa
+        else if (dist <= 60)
+          feeCalc = 10500; // Lagos Island
+        else if (dist <= 70)
+          feeCalc = 12500; // Ikoyi
+        else if (dist <= 85) feeCalc = 20500; // Victoria Island, Lekki Phase 1
+
+        var areaSel = document.getElementById("areaSelect");
+        var baseFee = feeCalc;
+        if (areaSel.value) {
+          baseFee = Math.max(parseInt(areaSel.value.split("|")[1]), feeCalc);
+        }
+
+        document.getElementById("toAddr").innerText =
+          display_name.split(",")[0];
+        document.getElementById("distKm").innerText = dist.toFixed(1);
+        document.getElementById("delFee").innerText = baseFee;
+        document.getElementById("distCalc").innerText = "(exact GPS matched)";
+        document.getElementById("exactAddrDisplay").innerText = display_name;
+        document.getElementById("custFullAddr").value = display_name;
+        document.getElementById("custDist").value = dist.toFixed(1);
+        document.getElementById("custDelFee").value = baseFee;
+        document.getElementById("custAddr").value = display_name.split(",")[0];
+        document.getElementById("addrSug").style.display = "none";
+        document.getElementById("deliveryBox").style.display = "block";
+        jmRender();
+      }
+
+      function jmRender() {
+        var count = 0,
+          subtotal = 0;
+        for (var i = 0; i < jmCart.length; i++) {
+          count += jmCart[i].qty;
+          subtotal += jmCart[i].price * jmCart[i].qty;
+        }
+        var delFee = parseInt(
+          document.getElementById("custDelFee").value || 1000,
+        );
+        if (count === 0) delFee = 0;
+        var total = subtotal + delFee;
+        document.getElementById("jm-count").innerText = count;
+        document.getElementById("jm-count2").innerText = count;
+        document.getElementById("jm-sub").innerText = subtotal;
+        document.getElementById("jm-del").innerText = delFee;
+        document.getElementById("jm-total").innerText = total;
+        var listHtml = "";
+        for (var j = 0; j < jmCart.length; j++) {
+          var x = jmCart[j];
+          listHtml +=
+            "<div class=jm-row><img src=" +
+            x.img +
+            "><div class=jm-row-info><p>" +
+            x.name +
+            "</p><b style=color:#002080>N" +
+            x.price +
+            "</b><div class=jm-qty><button onclick=jmDec(" +
+            x.id +
+            ")>-</button><span>" +
+            x.qty +
+            "</span><button onclick=jmInc(" +
+            x.id +
+            ")>+</button><span onclick=jmDel(" +
+            x.id +
+            ") style=color:red;margin-left:10px;cursor:pointer;font-size:12px>Remove</span></div></div></div>";
+        }
+        document.getElementById("jm-list").innerHTML =
+          listHtml ||
+          "<p style=text-align:center;color:#888;padding:40px>Your cart is empty<br><small>Select area or type street for delivery from Bariga</small></p>";
+        var lines = "";
+        for (var k = 0; k < jmCart.length; k++) {
+          lines +=
+            k +
+            1 +
+            ". " +
+            jmCart[k].name +
+            " x" +
+            jmCart[k].qty +
+            " = N" +
+            jmCart[k].price * jmCart[k].qty +
+            "\n";
+        }
+        var fullAddr =
+          document.getElementById("custFullAddr").value || "Not selected";
+        var dist = document.getElementById("custDist").value || "0";
+        var rawMsg =
+          "*NEW ORDER - CHARGE & CHILL - BARIGA BASE*\n\n" +
+          lines +
+          "\nSubtotal: N" +
+          subtotal +
+          "\nDelivery from Bariga: N" +
+          delFee +
+          "\nDistance: " +
+          dist +
+          "km\nAddress: " +
+          fullAddr +
+          "\n\nTOTAL: N" +
+          total +
+          "\n\nPaid to OPay 6593488912 TOHEEB ADEBAYO ADEBISI. Proof:";
+        document.getElementById("jm-whatsapp").href =
+          "https://wa.me/2349016791320?text=" + encodeURIComponent(rawMsg);
+      }
+      function jmOpen() {
+        document.getElementById("jm-drawer").classList.add("open");
+        document.getElementById("jm-overlay").classList.add("show");
+      }
+      function jmClose() {
+        document.getElementById("jm-drawer").classList.remove("open");
+        document.getElementById("jm-overlay").classList.remove("show");
+      }
+      function jmPayWithCard() {
+        var subtotal = 0;
+        for (var i = 0; i < jmCart.length; i++) {
+          subtotal += jmCart[i].price * jmCart[i].qty;
+        }
+        var delFee = parseInt(
+          document.getElementById("custDelFee").value || 1000,
+        );
+        var total = subtotal + delFee;
+        if (total == 0) {
+          alert("Cart empty");
+          return;
+        }
+        if (!document.getElementById("custFullAddr").value) {
+          alert("Please select your area or type your exact street first");
+          return;
+        }
+        var paystackKey = "pk_live_YOUR_PAYSTACK_KEY";
+        if (paystackKey.indexOf("YOUR_PAYSTACK_KEY") > -1) {
+          alert(
+            "Card not active yet. Use Transfer to 6593488912. Total: N" +
+              total +
+              " (Subtotal N" +
+              subtotal +
+              " + Delivery N" +
+              delFee +
+              ")",
+          );
+          return;
+        }
+        var handler = PaystackPop.setup({
+          key: paystackKey,
+          email: "customer@chargechill.com",
+          amount: total * 100,
+          currency: "NGN",
+          ref: "CHILL" + Date.now(),
+          callback: function (res) {
+            var lines = "";
+            for (var k = 0; k < jmCart.length; k++) {
+              lines +=
+                k +
+                1 +
+                ". " +
+                jmCart[k].name +
+                " x" +
+                jmCart[k].qty +
+                " = N" +
+                jmCart[k].price * jmCart[k].qty +
+                "\n";
+            }
+            var addr = document.getElementById("custFullAddr").value;
+            var dist = document.getElementById("custDist").value;
+            var msg =
+              "*PAID ORDER - CARD - BARIGA* Ref: " +
+              res.reference +
+              "\n\n" +
+              lines +
+              "\nSubtotal N" +
+              subtotal +
+              "\nDelivery N" +
+              delFee +
+              " (" +
+              dist +
+              "km)\nAddress: " +
+              addr +
+              "\n\nTOTAL PAID: N" +
+              total +
+              "\nSettled to OPay 6593488912";
+            window.location.href =
+              "https://wa.me/2349016791320?text=" + encodeURIComponent(msg);
+            localStorage.removeItem("jmCart");
+          },
+          onClose: function () {
+            alert("Payment cancelled");
+          },
+        });
+        handler.openIframe();
+      }
+      jmRender();
+    </script>
+
+    <div id="autoPopup" class="auto-modal">
+      <div class="auto-box">
+        <span class="auto-close" onclick="closeAutoPopup()">&times;</span
+        ><video
+          src="./video/bayo.mp4"
+          controls
+          style="width: 300px; height: 300px"
+        ></video>
+        <div style="padding: 16px; text-align: center">
+          <h2 style="margin: 0; color: #002080">⚡ STILL NEED LIGHT?</h2>
+          <p style="margin: 8px 0">We are still OPEN 24HRS!</p>
+          <div
+            style="
+              background: #ffd60a;
+              border-radius: 8px;
+              padding: 8px;
+              margin: 8px 0;
+              font-weight: 900;
+            "
+          >
+            Phone: N200 | 10k mAh: N400 | 50k mAh: N2000
+          </div>
+          <a
+            href="https://wa.me/2349016791320?text=Hi%20Charge%20%26%20Chill,%20I%20want%20to%20charge%20my%20power%20bank"
+            style="
+              display: block;
+              background: #002080;
+              color: #ffd60a;
+              padding: 12px;
+              border-radius: 24px;
+              text-decoration: none;
+              font-weight: 800;
+              margin-top: 8px;
+            "
+            >Chat on WhatsApp Now</a
+          >
+        </div>
+      </div>
+    </div>
+    <style>
+      .auto-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .auto-modal.show {
+        display: flex;
+        animation: fadeIn 0.3s;
+      }
+      .auto-box {
+        background: #fff;
+        width: 100%;
+        max-width: 360px;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        animation: popUp 0.4s;
+        border: 3px solid #ffd60a;
+      }
+      .auto-close {
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        font-size: 28px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.6);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes popUp {
+        from {
+          transform: scale(0.7);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+    </style>
+    <script>
+      function showAutoPopup() {
+        document.getElementById("autoPopup").classList.add("show");
+      }
+      function closeAutoPopup() {
+        document.getElementById("autoPopup").classList.remove("show");
+      }
+      setTimeout(showAutoPopup, 10000);
+      setInterval(showAutoPopup, 600000);
+      document
+        .getElementById("autoPopup")
+        .addEventListener("click", function (e) {
+          if (e.target.id === "autoPopup") closeAutoPopup();
+        });
+    </script>
+  </body>
+</html>
